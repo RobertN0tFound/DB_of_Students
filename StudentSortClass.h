@@ -1,48 +1,101 @@
 #include <iostream>
+#include <algorithm>
 #include "StudentClass.h"
-#include "SessionDataClass.h"
 
 using namespace std;
 
 struct Sort{
     StudentClass* stId;
-    int rating = 0;
+    double rating = 0;
+    bool isCopied = false;
     struct Sort* prev = NULL;
     struct Sort* next = NULL;
 };
-struct Sort* headUnList = NULL;
-struct Sort* headSoList = NULL;
+
 class StudentSortClass{ // Нужно отсортировать по убыванию успеваемости за сессии
+private:
+    struct Sort* headUnList = NULL;
+    struct Sort* headSoList = NULL;
+    int StudentCount = 0;
+    int SortedCount = 0;
+
 public:
-    void addList(){
-        Sort* tmp = headUnList;
-        SessionDataClass rate;
-        Sort* prev = NULL;
-        Sort* next = NULL;
-        if (headUnList == NULL){
-            headUnList = new Sort;
-            headUnList->stId = NULL;
-            headUnList->rating = rate.getRating();
-            headUnList->prev = NULL;
-            headUnList->next = NULL;
+
+    void populateList(StudentClass* head){
+        StudentClass* temp = head;
+        headUnList = new Sort;
+        StudentCount++;
+        headUnList->stId = temp;
+        for(int i = 0; i < 10; i++){
+            headUnList->rating += temp->sessionData[i].getRating();
         }
-        else{
-            while(tmp->next!= NULL){
-                tmp = tmp->next;
+        while (temp->getNext() != NULL){
+            struct Sort* tmp = new Sort;
+            StudentCount++;
+            temp = temp->getNext();
+            tmp->stId = temp;
+            for(int i = 0; i < 10; i++){
+                tmp->rating += temp->sessionData[i].getRating();
             }
-            tmp->next = new Sort;
-            tmp->next->stId = NULL;
-            tmp->next->rating = rate.getRating();
-            tmp->next->prev = tmp;
-            tmp->next->next = NULL;
         }
     }
 
     void sortList(){
-        Sort* tmp = headUnList;
-        headSoList = new Sort;
-        while(){
-
+        struct Sort* tmp = headUnList;
+        struct Sort* temp = headSoList;
+        struct Sort* headSoList{new Sort[StudentCount]};
+        double* rate{new double[StudentCount]};
+        int i = 0;
+        while(tmp){
+            rate[i] = tmp->rating;
+            tmp = tmp->next;
+            i++;
         }
+        sort(rate, rate + StudentCount);
+        for (i = 0; i < StudentCount; i++){
+            tmp = headUnList;
+            while(tmp->next != NULL){
+                if(tmp->rating == rate[i] && tmp->isCopied == false){
+                        headSoList[i].stId = tmp->stId;
+                        headSoList[i].rating = tmp->rating;
+                        tmp->isCopied = true;
+                }
+            tmp = tmp->next;
+            }
+        }
+        SortedCount = StudentCount;
+    }
+
+    void sortList(string StartYear, string EndYear){
+        struct Sort* tmp = headUnList;
+        struct Sort* temp = headSoList;
+        struct Sort* headSoList{new Sort[StudentCount]};
+        double* rate{new double[StudentCount]};
+        int _StartYear = stoi(StartYear);
+        int _EndYear = stoi(EndYear);
+        SortedCount = 0;
+        while(tmp){
+            if (tmp->stId->getBirthYear() >= _StartYear && tmp->stId->getBirthYear() <= _EndYear){
+                rate[SortedCount] = tmp->rating;
+            }
+            tmp = tmp->next;
+            SortedCount++;
+        }
+        sort(rate, rate + SortedCount);
+        for (int i = 0; i < SortedCount; i++){
+            tmp = headUnList;
+            while(tmp->next != NULL){
+                if(tmp->rating == rate[i] && tmp->isCopied == false){
+                        headSoList[i].stId = tmp->stId;
+                        headSoList[i].rating = tmp->rating;
+                        tmp->isCopied = true;
+                }
+            tmp = tmp->next;
+            }
+        }
+    }
+
+    int getSortedCount(){
+        return SortedCount;
     }
 };

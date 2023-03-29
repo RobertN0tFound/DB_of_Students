@@ -18,23 +18,24 @@ private:
     string recordBook;
     char sex;
     int rating;
-    SessionDataClass sessionData[9];
     int nextSessionData;
     StudentClass* prev;
     StudentClass* next;
     
 public:
+
+    SessionDataClass sessionData[9];
     StudentClass(int _id, string _surname, string _name, string _middleName, string _birthDate, int _entryYear,
-    string _faculty, string _department, string _group, string _recordBook, char _sex, StudentClass* _prev){
+    string _faculty, string _department, string _group, string _recordBook, char _sex, StudentClass* _prev = NULL){
         id = _id;
         surname = _surname;
         name = _name;
         middleName = _middleName;
         birthDate = _birthDate;
-        entryYear = _entryYear;;
-        faculty = _faculty;;
+        entryYear = _entryYear;
+        faculty = _faculty;
         department = _department;
-        group = _group;;
+        group = _group;
         recordBook = _recordBook;
         sex = _sex;
         prev = _prev;
@@ -55,9 +56,18 @@ public:
         }
     }
 
-    void editSession(int index, string _name, int _mark){ // Изменить оценку сессии
+    void editSession(int index, string _name, int _oldMark, int _newMark){ // Изменить оценку сессии
         if (index < nextSessionData){
-            sessionData[index].updateRecord(_name, _mark);
+            sessionData[index].updateRecord(_name, _oldMark, _newMark);
+        }
+        else{
+            cout << "Cессии " << index << " не существует" << endl;
+        }
+    }
+
+    void editSession(int index, string _name, int _newMark){ // Добавить предмет и оценку в сессию
+        if (index < nextSessionData){
+            sessionData[index].updateRecord(_name, -1, _newMark);
         }
         else{
             cout << "Данной сессии не существует" << endl;
@@ -76,9 +86,13 @@ public:
     void addStudent(int _id, string _surname, string _name, string _middleName, string _birthDate, int _entryYear,
     string _faculty, string _department, string _group, string _recordBook, char _sex){
         StudentClass* tmp;
-        tmp = new StudentClass(_id, _surname, _name, _middleName, _birthDate, _entryYear,
-        _faculty, _department, _group, _recordBook, _sex,  this);
-        this->next = tmp;
+        tmp = this;
+        while(tmp->next != NULL){
+            tmp = tmp->next;
+        }
+        tmp->next = new StudentClass(_id, _surname, _name, _middleName, _birthDate, _entryYear,
+        _faculty, _department, _group, _recordBook, _sex,  tmp);
+        tmp->next->next = NULL;
     }
 
     StudentClass* getNext(){
@@ -95,5 +109,9 @@ public:
 
     string getBirthDate(){
         return birthDate;
+    }
+
+    int getBirthYear(){
+        return atoi(&birthDate[6]); // 12.02.2023
     }
 };

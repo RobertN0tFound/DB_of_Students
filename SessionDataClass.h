@@ -33,37 +33,41 @@ public:
     }
 
     string getRecord(string _name){
+        string str = "";
         for(int i = 0; i < 10; i++){
             if (name[i] == _name){
-                return "Предмет: " + name[i] + " Оценка: " + to_string(mark[i]);
+                str += "Предмет: " + name[i] + " Оценка: " + to_string(mark[i]) + "\n";
             }
         }
-        return "";
-    }
-
-    void updateRecord(string _name, int _mark){
-        for(int i = 0; i < 10; i++){
-            if (name[i] == _name){
-                mark[i] = _mark;
-                return;
-            }
-        }
+        return str;
     }
 
     void updateRecord(string _oldName, string _newName){
         for(int i = 0; i < 10; i++){
             if (name[i] == _oldName){
                 name[i] = _newName;
+            }
+        }
+    }
+
+    void updateRecord(string _name, int _oldMark, int _newMark){
+        for(int i = 0; i < 10; i++){
+            if (name[i] == _name && mark[i] == _oldMark){
+                mark[i] = _newMark;
                 return;
             }
         }
     }
 
     int getRating(){
-        int sum = 0;
+        double sum = 0;
+        double res;
+        int elements = 0;
         for(int i = 0; i < 10; i++){
             sum += mark[i];
+            elements++;
         }
-        return sum;
+        res = sum/elements;
+        return res;
     }
 };
