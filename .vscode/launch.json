@@ -9,7 +9,7 @@
             "stopAtEntry": false,
             "externalConsole": true,
             "cwd": "c:/Users/worki/source/repos/RobertN0tFound/DB_of_Students",
-            "program": "${workspaceFolder}/a.exe",
+            "program": "${workspaceFolder}/DB_of_Students.exe",
             "MIMode": "gdb",
             "miDebuggerPath": "gdb",
             "setupCommands": [
