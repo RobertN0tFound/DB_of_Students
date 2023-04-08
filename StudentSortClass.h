@@ -14,13 +14,18 @@ struct Sort{
 
 class StudentSortClass{ // Нужно отсортировать по убыванию успеваемости за сессии
 private:
-    struct Sort* headUnList = NULL;
-    struct Sort* headSoList = NULL;
-    int StudentCount = 0;
-    int SortedCount = 0;
+    struct Sort* headUnList;
+    struct Sort* headSoList;
+    int StudentCount;
+    int SortedCount;
 
 public:
-
+    StudentSortClass(){
+        headUnList = NULL;
+        headSoList = NULL;
+        StudentCount = 0;
+        SortedCount = 0;
+    }
     void populateList(StudentClass* head){
         StudentClass* temp = head;
         headUnList = new Sort;
@@ -97,5 +102,9 @@ public:
 
     int getSortedCount(){
         return SortedCount;
+    }
+
+    Sort* getSortedList(){
+        return headSoList;
     }
 };

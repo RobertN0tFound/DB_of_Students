@@ -1,6 +1,8 @@
 #include <string>
 #include <iostream>
 #include "SessionDataClass.h"
+//#include "ClassMenu.h"
+//#include "ClassEdit.h"
 
 using namespace std;
 
@@ -114,4 +116,6 @@ public:
     int getBirthYear(){
         return atoi(&birthDate[6]); // 12.02.2023
     }
+
+
 };

@@ -59,13 +59,15 @@ public:
         }
     }
 
-    int getRating(){
+    double getRating(){
         double sum = 0;
         double res;
         int elements = 0;
         for(int i = 0; i < 10; i++){
-            sum += mark[i];
-            elements++;
+            if (mark[i] >= 0){
+                sum += mark[i];
+                elements++;
+            }
         }
         res = sum/elements;
         return res;
