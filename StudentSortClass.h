@@ -29,26 +29,33 @@ public:
     void populateList(StudentClass* head){
         StudentClass* temp = head;
         headUnList = new Sort;
+        struct Sort* current = headUnList;
         StudentCount++;
         headUnList->stId = temp;
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 9; i++){
             headUnList->rating += temp->sessionData[i].getRating();
         }
         while (temp->getNext() != NULL){
-            struct Sort* tmp = new Sort;
             StudentCount++;
             temp = temp->getNext();
-            tmp->stId = temp;
-            for(int i = 0; i < 10; i++){
-                tmp->rating += temp->sessionData[i].getRating();
+            while (current->next != NULL)
+            {
+                current = current->next;
             }
+            current->next = new Sort;
+            current->next->stId = temp;
+            for(int i = 0; i < 9; i++){
+                current->next->rating += temp->sessionData[i].getRating();
+            }
+            current->next->next = NULL;
+            current->next->prev = current;
         }
     }
 
     void sortList(){
         struct Sort* tmp = headUnList;
         struct Sort* temp = headSoList;
-        struct Sort* headSoList{new Sort[StudentCount]};
+        headSoList = {new Sort[StudentCount]};
         double* rate{new double[StudentCount]};
         int i = 0;
         while(tmp){
@@ -74,7 +81,7 @@ public:
     void sortList(string StartYear, string EndYear){
         struct Sort* tmp = headUnList;
         struct Sort* temp = headSoList;
-        struct Sort* headSoList{new Sort[StudentCount]};
+        headSoList = {new Sort[StudentCount]};
         double* rate{new double[StudentCount]};
         int _StartYear = stoi(StartYear);
         int _EndYear = stoi(EndYear);
@@ -82,18 +89,19 @@ public:
         while(tmp){
             if (tmp->stId->getBirthYear() >= _StartYear && tmp->stId->getBirthYear() <= _EndYear){
                 rate[SortedCount] = tmp->rating;
+                SortedCount++;
             }
             tmp = tmp->next;
-            SortedCount++;
         }
-        sort(rate, rate + SortedCount);
+        sort(rate, rate + SortedCount, greater<double>());
         for (int i = 0; i < SortedCount; i++){
             tmp = headUnList;
-            while(tmp->next != NULL){
+            while(tmp){
                 if(tmp->rating == rate[i] && tmp->isCopied == false){
                         headSoList[i].stId = tmp->stId;
                         headSoList[i].rating = tmp->rating;
                         tmp->isCopied = true;
+                        break;
                 }
             tmp = tmp->next;
             }

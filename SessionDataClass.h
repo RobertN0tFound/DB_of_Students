@@ -69,7 +69,14 @@ public:
                 elements++;
             }
         }
-        res = sum/elements;
+        if (elements == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            res = sum / elements;
+        }
         return res;
     }
 };

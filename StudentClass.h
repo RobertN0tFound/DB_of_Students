@@ -1,8 +1,7 @@
 #include <string>
 #include <iostream>
 #include "SessionDataClass.h"
-//#include "ClassMenu.h"
-//#include "ClassEdit.h"
+#include "ClassEdit.h"
 
 using namespace std;
 
@@ -72,7 +71,7 @@ public:
             sessionData[index].updateRecord(_name, -1, _newMark);
         }
         else{
-            cout << "Данной сессии не существует" << endl;
+            cout << "Cессии " << index << " не существует" << endl;
         }
     }
 
@@ -81,7 +80,7 @@ public:
             sessionData[index].updateRecord(_name, _newName);
         }
         else{
-            cout << "Данной сессии не существует" << endl;
+            cout << "Cессии " << index << " не существует" << endl;
         }
     }
 
