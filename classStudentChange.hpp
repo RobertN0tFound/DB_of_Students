@@ -1,7 +1,9 @@
-﻿#include "classMassive.hpp"
+﻿#pragma once
+#include "classMassive.hpp"
 #include "classMenu.hpp"
 #include "classDB.hpp"
 #include "classMap.hpp"
+#include "classBirthDate.hpp"
 #include <locale>
 #include <codecvt>
 
@@ -15,13 +17,52 @@ private:
     int studentId;
     DB_Students *db;
 
+    bool isDigit(const std::wstring& str)
+    {
+        if (str.empty())
+            return false;
+        for (const auto& c : str)
+        {
+            if (!std::isdigit(c))
+                return false;
+        }
+        return true;
+    }
+
+    bool isAlpha(std::wstring const &str)
+    {
+        if (str.empty())
+            return false;
+        for (const auto& c : str)
+        {
+            if (!iswalpha(c))
+                return false;
+        }
+        return true;
+    }
+
+    bool checkSex(std::wstring const &str)
+    {
+        if (str.empty())
+            return false;
+        for (const auto& c : str)
+        {
+            if (!iswalpha(c) || str.length() != 1 || (c != L'М' && c != L'Ж'))
+                return false;
+        }
+        return true;
+    }
+
 public:
     StudentChange(DB_Students *_db, int _studentId)
     {
         db = _db;
         studentId = _studentId;
         title.pushBack("Выберите действие со студентом:");
-        title.pushBack(db->getStudentFIO(studentId));
+        title.pushBack("ФИО: " + db->getStudentFIO(studentId));
+        title.pushBack("Дата рождения: " + db->getBirthDate(studentId) + " " + "Пол: " + db->getSex(studentId) + " " + "Год поступления: " + db->getStartYear(studentId));
+        title.pushBack("Отделение: " + db->getDepartment(studentId) + " " + "Факультет: " + db->getFaculty(studentId) + " " + "Группа: " + db->getGroup(studentId));
+        title.pushBack("Номер зачетки: " + db->getNumDoc(studentId)) ;
         options.pushBack("Вернуться в предыдущее меню");
         options.pushBack("Изменить данные студента");
         options.pushBack("Сессии");
@@ -146,13 +187,77 @@ public:
             {
                 std::wstring val;
                 std::wcout << L"  Введите значение для атрибута <" << converter.from_bytes(attr[opt]) << L">: ";
-                std::getline(std::wcin, val);
-                std::wcin.ignore();
-                std::wcout << L"  Введено значение: " << val << std::endl;
-                db->setStudentAttr(studentId, attr[opt], converter.to_bytes(val));
-                std::wcout << L"  Значение: " << val << L" сохранено." << std::endl;
-                std::wcout << L"  Нажмите любую клавишу для продолжения...";
-                _getch();
+                if (attr[opt] == "Дата рождения")
+                {
+                    while (true)
+                    {
+                        class birthDate temp;
+                        unsigned short _day = 0;
+                        unsigned short _month = 0;
+                        unsigned short _year = 0;
+                        std::wcin >> _day >> _month >> _year;
+                        std::wcin.ignore();
+                        if (_day != 0 && _month != 0 && _year != 0)
+                        {
+                            if (!temp.is_valid(_day, _month, _year))
+                            {
+                                std::wcout << L"Дата рождения введена не корректно!" << std::endl;
+                            }
+                            else
+                            {
+                                temp.setDate(_day, _month, _year);
+                                std::wcout << L"  Введено значение: " << _day << "." << _month << "." << _year << std::endl;
+                                db->setStudentAttr(studentId, attr[opt], temp.getDate());
+                                std::wcout << L"  Значение: " << _day << "." << _month << "." << _year << L" сохранено." << std::endl;
+                                std::wcout << L"  Нажмите любую клавишу для продолжения...";
+                                _getch();
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            std::wcout << L"Дата рождения введена не корректно!" << std::endl;
+                        }
+                    }
+                }
+                else
+                {
+                    while (true)
+                    {
+                        std::getline(std::wcin, val);
+                        std::wcin.ignore();
+                        if (attr[opt] == "Фамилия" || attr[opt] == "Имя" || attr[opt] == "Отчество")
+                        {
+                            if (!isAlpha(val))
+                            {
+                                std::wcout << L"Ошибка ввода <" << converter.from_bytes(attr[opt]) << L">!" << std::endl;
+                            }
+                            else
+                                break;
+                        }
+
+                        if (attr[opt] == "Пол")
+                        {
+                            if (!checkSex(val))
+                            {
+                                std::wcout << L"Некорректный пол. Пол может быть 'М' или 'Ж'!" << std::endl;
+                            }
+                            else
+                                break;
+                        }
+                    }
+                    std::wcout << L"  Введено значение: " << val << std::endl;
+                    db->setStudentAttr(studentId, attr[opt], converter.to_bytes(val));
+                    std::wcout << L"  Значение: " << val << L" сохранено." << std::endl;
+                    std::wcout << L"  Нажмите любую клавишу для продолжения...";
+                    _getch();
+                }
+
+                // std::wcout << L"  Введено значение: " << val << std::endl;
+                // db->setStudentAttr(studentId, attr[opt], converter.to_bytes(val));
+                // std::wcout << L"  Значение: " << val << L" сохранено." << std::endl;
+                // std::wcout << L"  Нажмите любую клавишу для продолжения...";
+                // _getch();
             }
             else
             {

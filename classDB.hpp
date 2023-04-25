@@ -4,6 +4,7 @@
 #include <fstream>
 #include "classMassive.hpp"
 #include "classMap.hpp"
+#include "classEncryption.hpp"
 #include "json.hpp" //https://json.nlohmann.me/api/basic_json/is_number/#examples
 
 using json = nlohmann::json;
@@ -87,6 +88,8 @@ public:
 
     bool load(const std::string filename = "database.txt")
     {
+        class fileEnc fe;
+        fe.Decrypt();
         std::ifstream ifs(filename);
         if (ifs.is_open())
         {
@@ -390,6 +393,83 @@ public:
         res += db[sid]["Имя"];
         res += " ";
         res += db[sid]["Отчество"];
+        return res;
+    }
+
+    std::string getBirthDate(const int _id)
+    {
+        std::string sid = std::to_string(_id);
+        if (!isStudentFound(sid))
+            return "";
+        
+        std::string res;
+        res = db[sid]["Дата рождения"];
+        return res;
+    }
+
+    std::string getSex(const int _id)
+    {
+        std::string sid = std::to_string(_id);
+        if (!isStudentFound(sid))
+            return "";
+        
+        std::string res;
+        res = db[sid]["Пол"];
+        return res;
+    }
+
+    std::string getStartYear(const int _id)
+    {
+        std::string sid = std::to_string(_id);
+        if (!isStudentFound(sid))
+            return "";
+        
+        std::string res;
+        res = db[sid]["Поступил"];
+        return res;
+    }
+
+    std::string getDepartment(const int _id)
+    {
+        std::string sid = std::to_string(_id);
+        if (!isStudentFound(sid))
+            return "";
+        
+        std::string res;
+        res = db[sid]["Отделение"];
+        return res;
+    }
+
+    std::string getFaculty(const int _id)
+    {
+        std::string sid = std::to_string(_id);
+        if (!isStudentFound(sid))
+            return "";
+        
+        std::string res;
+        res = db[sid]["Факультет"];
+        return res;
+    }
+
+    std::string getGroup(const int _id)
+    {
+        std::string sid = std::to_string(_id);
+        if (!isStudentFound(sid))
+            return "";
+        
+        std::string res;
+        res = db[sid]["Группа"];
+        return res;
+    }
+
+    std::string getNumDoc(const int _id)
+    {
+        std::string sid = std::to_string(_id);
+        if (!isStudentFound(sid))
+            return "";
+        
+        std::string res;
+        res = db[sid]["Номер зачетки"];
         return res;
     }
 
