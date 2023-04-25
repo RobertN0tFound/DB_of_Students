@@ -299,65 +299,102 @@ public:
                             << L": " << converter.from_bytes(std::to_string(element.second)) << std::endl;
                 }
             }
-            std::wcout << L"Введите номер сессии или ! для выхода: ";
-            {
-                std::wstring tmp;
-                std::getline(std::wcin, tmp);
-                std::wcin.ignore();
-                session = converter.to_bytes(tmp);
-            }
-            if (session == "!")
-                return;
-            if (!std::all_of(session.begin(), session.end(), ::isdigit)) // проверим на число
-            {
-                std::wcout << L"Ошибка. Ожидалось число или !" << std::endl;
-                continue;
-            }
-            if (std::find(std::begin(sessionList), std::end(sessionList), stol(session)) == std::end(sessionList))
-            {
-                std::wstring tmp;
-                while (true)
-                {
-                    std::wcout << L"Введенной сессии нет, создать (д/н): ";
-                    std::getline(std::wcin, tmp);
-                    std::wcin.ignore();
-                    if (tmp == L"Д" || tmp == L"д")
-                        break;
-                    if (tmp == L"Н" || tmp == L"н")
-                        break;
-                    std::wcout << L"Ошибка. только Д или Н" << std::endl;
-                }
-                if (tmp == L"Н" || tmp == L"н")
-                    continue;
-            }
-            std::wcout << L"Введите предмет: ";
-            {
-                std::wstring tmp;
-                std::getline(std::wcin, tmp);
-                std::wcin.ignore();
-                exam = converter.to_bytes(tmp);
-            }
             while (true)
             {
-                std::wcout << L"Введите оценку (0-незачет, 1-зачет, 2..5): ";
+                std::wcout << L"Введите номер сессии или ! для выхода: ";
                 {
                     std::wstring tmp;
                     std::getline(std::wcin, tmp);
                     std::wcin.ignore();
-                    mark = converter.to_bytes(tmp);
+                    session = converter.to_bytes(tmp);
                 }
-                if (!std::all_of(mark.begin(), mark.end(), ::isdigit)) // проверим на число
+                if (session == "!")
+                    return;
+                if (!std::all_of(session.begin(), session.end(), ::isdigit)) // проверим на число
                 {
-                    std::wcout << L"Ошибка. Ожидалось число." << std::endl;
+                    std::wcout << L"Ошибка. Ожидалось число или !" << std::endl;
                     continue;
                 }
-                if (stol(mark) > 5 || stol(mark) < 0)
+                if (stol(session) < 1 || stol(session) > 9)
                 {
-                    std::wcout << L"Ошибка. Число в дипазоне 0..5" << std::endl;
+                    std::wcout << L"Ошибка! Всего может быть 9 сессий (1-9)!" << std::endl;
                     continue;
+                }
+                if (std::find(std::begin(sessionList), std::end(sessionList), stol(session)) == std::end(sessionList))
+                {
+                    std::wstring tmp;
+                    while (true)
+                    {
+                        std::wcout << L"Введенной сессии нет, создать (д/н): ";
+                        std::getline(std::wcin, tmp);
+                        std::wcin.ignore();
+                        if (tmp == L"Д" || tmp == L"д")
+                            break;
+                        if (tmp == L"Н" || tmp == L"н")
+                            break;
+                        std::wcout << L"Ошибка. только Д или Н" << std::endl;
+                    }
+                    if (tmp == L"Н" || tmp == L"н")
+                        continue;
+                }
+                std::wcout << L"Введите предмет: ";
+                {
+                    std::wstring tmp;
+                    std::getline(std::wcin, tmp);
+                    std::wcin.ignore();
+                    exam = converter.to_bytes(tmp);
+                }
+                while (true)
+                {
+                    std::wcout << L"Введите оценку (0-незачет, 1-зачет, 2..5): ";
+                    {
+                        std::wstring tmp;
+                        std::getline(std::wcin, tmp);
+                        std::wcin.ignore();
+                        mark = converter.to_bytes(tmp);
+                    }
+                    if (!std::all_of(mark.begin(), mark.end(), ::isdigit)) // проверим на число
+                    {
+                        std::wcout << L"Ошибка. Ожидалось число." << std::endl;
+                        continue;
+                    }
+                    if (stol(mark) > 5 || stol(mark) < 0)
+                    {
+                        std::wcout << L"Ошибка. Число в дипазоне 0..5" << std::endl;
+                        continue;
+                    }
+                    break;
                 }
                 break;
             }
+            // std::wcout << L"Введите предмет: ";
+            // {
+            //     std::wstring tmp;
+            //     std::getline(std::wcin, tmp);
+            //     std::wcin.ignore();
+            //     exam = converter.to_bytes(tmp);
+            // }
+            // while (true)
+            // {
+            //     std::wcout << L"Введите оценку (0-незачет, 1-зачет, 2..5): ";
+            //     {
+            //         std::wstring tmp;
+            //         std::getline(std::wcin, tmp);
+            //         std::wcin.ignore();
+            //         mark = converter.to_bytes(tmp);
+            //     }
+            //     if (!std::all_of(mark.begin(), mark.end(), ::isdigit)) // проверим на число
+            //     {
+            //         std::wcout << L"Ошибка. Ожидалось число." << std::endl;
+            //         continue;
+            //     }
+            //     if (stol(mark) > 5 || stol(mark) < 0)
+            //     {
+            //         std::wcout << L"Ошибка. Число в дипазоне 0..5" << std::endl;
+            //         continue;
+            //     }
+            //     break;
+            // }
             db->setExamResult(studentId, stol(session), exam, stol(mark));
         }
     }

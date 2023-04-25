@@ -257,6 +257,74 @@ public:
         return true;
     };
 
+    bool calculateAllRating(const Massive<int>& sessNums, const Massive<int>& birthCheck)
+    {
+        if (db.size() == 0) // нет студентов, бд пустая
+            return false;
+        
+        float rating;
+        int count;
+        for (auto &[key, val] : db.items())
+        {                 // обход всех студентов
+                std::string birthStr = val["Дата рождения"];
+                int birthNum = stol(birthStr.substr(6));
+                if (birthCheck.contains(birthNum))
+                {
+                    rating = 0.0; // сбросим рейтинг для найденного студента
+                    count = 0;    // считаем кол-во сданных экзаменов
+                    for (auto &[_skey, _sval] : val["Сессия"].items())
+                    {
+                        int sessNum = stol(_skey);    
+                        if (sessNums.contains(sessNum))
+                        {
+                            for (auto &[_key, _val] : _sval.items()) // скичем ключ и значение
+                            {
+                                for (auto &[exam, mark] : _val.items()) // так как в значении у нас структуре предмет:оценка, то пройдемся по ней
+                                {                                       // обход всех сданных экзаменов
+                                    rating += int(mark);                // приведение явно к типу int
+                                    count++;                            // считаем кол-во сданных экзменов
+                                }
+                            }
+                        }                                   // Берем только сессию, остальные поля нам не интресны
+                    }
+                    if (count > 0) // если есть оценки, то вычислим среднее арифметическое значение рейтинга
+                    {
+                        db[key]["Рейтинг"] = round((rating / count) * 100) / 100; // оставим 2 знака после запятой
+                        // std::cout << "Рейтинг" << db[key]["Рейтинг"] << std::endl;
+                        // std::cout << key << std::endl;
+                    }
+                    else
+                        db[key]["Рейтинг"] = 0.0;
+                }
+            // rating = 0.0; // сбросим рейтинг для найденного студента
+            // count = 0;    // считаем кол-во сданных экзаменов
+            // for (auto &[_skey, _sval] : val["Сессия"].items())
+            // {
+            //     int sessNum = stol(_skey);    
+            //     if (sessNums.contains(sessNum))
+            //     {
+            //         for (auto &[_key, _val] : _sval.items()) // скичем ключ и значение
+            //         {
+            //             for (auto &[exam, mark] : _val.items()) // так как в значении у нас структуре предмет:оценка, то пройдемся по ней
+            //             {                                       // обход всех сданных экзаменов
+            //                 rating += int(mark);                // приведение явно к типу int
+            //                 count++;                            // считаем кол-во сданных экзменов
+            //             }
+            //         }
+            //     }                                   // Берем только сессию, остальные поля нам не интресны
+            // }
+            // if (count > 0) // если есть оценки, то вычислим среднее арифметическое значение рейтинга
+            // {
+            //     db[key]["Рейтинг"] = round((rating / count) * 100) / 100; // оставим 2 знака после запятой
+            //     // std::cout << "Рейтинг" << db[key]["Рейтинг"] << std::endl;
+            //     // std::cout << key << std::endl;
+            // }
+            // else
+            //     db[key]["Рейтинг"] = 0.0;
+        }
+        return true;
+    };
+
     // возвращает id студента по ФИО
     // если не найден студент, то возврщаем < 0
     int getStudentId(const std::string name, const std::string middleName, const std::string surName)
@@ -404,6 +472,19 @@ public:
         
         std::string res;
         res = db[sid]["Дата рождения"];
+        return res;
+    }
+
+    std::string getBirthYear(const int _id)
+    {
+        std::string sid = std::to_string(_id);
+        if (!isStudentFound(sid))
+            return "";
+        
+        std::string res;
+        std::string resStr;
+        resStr = db[sid]["Дата рождения"];
+        res = resStr.substr(6);
         return res;
     }
 
@@ -568,6 +649,17 @@ public:
             results.pushBack({int_key, getStudentFIO(int_key)});
         }
         return results;
+    }
+
+    std::string getstudentRating(const int _id)
+    {
+        std::string sid = std::to_string(_id);
+        if (!isStudentFound(sid))
+            return "";
+        
+        float res;
+        res = db[sid]["Рейтинг"];
+        return std::to_string(res);
     }
 };
 /* Примеры использования

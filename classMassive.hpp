@@ -50,6 +50,15 @@ public:
         return *this;
     }
 
+    bool contains(const T& element) const {
+        for (size_t i = 0; i < size_; ++i)
+        {
+            if (arr_[i] == element)
+                return true;
+        }
+        return false;
+    }
+
     Massive &operator=(Massive &&other) noexcept
     {
         if (this != &other)
