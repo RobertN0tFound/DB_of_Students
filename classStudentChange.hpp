@@ -59,8 +59,8 @@ public:
         title.pushBack("Выберите действие со студентом:");
         title.pushBack("ФИО: " + db->getStudentFIO(studentId));
         title.pushBack("Дата рождения: " + db->getBirthDate(studentId) + " " + "Пол: " + db->getSex(studentId) + " " + "Год поступления: " + db->getStartYear(studentId));
-        title.pushBack("Отделение: " + db->getDepartment(studentId) + " " + "Факультет: " + db->getFaculty(studentId) + " " + "Группа: " + db->getGroup(studentId));
-        title.pushBack("Номер зачетки: " + db->getNumDoc(studentId)) ;
+        title.pushBack("Кафедра: " + db->getDepartment(studentId) + " " + "Институт: " + db->getFaculty(studentId) + " " + "Группа: " + db->getGroup(studentId));
+        title.pushBack("Номер зачетки: " + db->getNumDoc(studentId) + " " + "Текущий семестр: " + db->getCurrentSemester(studentId));
         options.pushBack("Вернуться в предыдущее меню");
         options.pushBack("Изменить данные студента");
         options.pushBack("Сессии");
@@ -153,7 +153,7 @@ public:
 
         int opt;
 
-        std::string order[] = {"Фамилия", "Имя", "Отчество", "Дата рождения", "Пол", "Поступил", "Отделение", "Факультет", "Группа", "Номер зачетки"};
+        std::string order[] = {"Фамилия", "Имя", "Отчество", "Дата рождения", "Пол", "Год поступления", "Кафедра", "Институт", "Группа", "Номер зачетки"};
         while (true)
         {
             menu.clear();
@@ -299,6 +299,11 @@ public:
                     std::wcin.ignore();
                     session = converter.to_bytes(tmp);
                 }
+                if (session.empty())
+                {
+                    std::wcout << L"Ошибка. Ожидалось число или !" << std::endl;
+                    continue;
+                }
                 if (session == "!")
                     return;
                 if (!std::all_of(session.begin(), session.end(), ::isdigit)) // проверим на число
@@ -328,12 +333,21 @@ public:
                     if (tmp == L"Н" || tmp == L"н")
                         continue;
                 }
-                std::wcout << L"Введите предмет: ";
+                while (true)
                 {
-                    std::wstring tmp;
-                    std::getline(std::wcin, tmp);
-                    std::wcin.ignore();
-                    exam = converter.to_bytes(tmp);
+                    std::wcout << L"Введите предмет: ";
+                    {
+                        std::wstring tmp;
+                        std::getline(std::wcin, tmp);
+                        std::wcin.ignore();
+                        exam = converter.to_bytes(tmp);
+                    }
+                    if (exam.empty())
+                    {
+                        std::wcout << L"Ошибка. Ожидалось название предмета!" << std::endl;
+                        continue;
+                    }
+                    break;
                 }
                 while (true)
                 {
@@ -343,6 +357,11 @@ public:
                         std::getline(std::wcin, tmp);
                         std::wcin.ignore();
                         mark = converter.to_bytes(tmp);
+                    }
+                    if (mark.empty())
+                    {
+                        std::wcout << L"Ошибка. Ожидалась оценка за предмет!" << std::endl;
+                        continue;
                     }
                     if (!std::all_of(mark.begin(), mark.end(), ::isdigit)) // проверим на число
                     {
