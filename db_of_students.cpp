@@ -33,6 +33,7 @@ int main()
     menu.addTitle("База данных студентов");
     menu.addOption("Просмотр/измение информации студента");
     menu.addOption("Добавить нового студента в БД");
+    menu.addOption("Выполнить вариант задания №82");
     menu.addOption("Загрузить БД студентов");
     menu.addOption("Сохранить БД студентов");
     menu.addOption("Завершить программу");
@@ -58,11 +59,13 @@ int main()
         }
         break;
         case 2:
+            
+        case 3:
             db.load();
             std::wcout << L"База данных загружена.\nНажмите любую клавише для продолжения...";
             _getch();
             break;
-        case 3:
+        case 4:
             db.save();
             std::wcout << L"База данных сохранена.\nНажмите любую клавише для продолжения...";
             _getch();

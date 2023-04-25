@@ -155,12 +155,14 @@ public:
         while (true)
         {
             class birthDate temp;
-            unsigned short _day = 0;
-            unsigned short _month = 0;
-            unsigned short _year = 0;
+            std::wstring date;
+            std::wstringstream ss;
+            unsigned short _day, _month, _year;
             std::wcout << L"Введите дату рождения (день, месяц, год): ";
-            std::wcin >> _day >> _month >> _year;
+            std::getline(std::wcin, date);
             std::wcin.ignore();
+            ss.str(date);
+            ss >> _day >> _month >> _year;
             if (_day != 0 && _month != 0 && _year != 0)
             {
                 if (!temp.is_valid(_day, _month, _year))
