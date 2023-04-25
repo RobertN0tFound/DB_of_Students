@@ -7,9 +7,6 @@
 #include <locale>
 #include <codecvt>
 #include <sstream>
-
-// std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-
 class StudentChange
 {
 private:
@@ -127,7 +124,7 @@ public:
         {
             std::wcout << L"Отмена операции удаления." << std::endl;
             std::wcout << L"Нажмите клавишу для продолжения." << std::endl;
-            _getch(); // Пользователь должне увидеть собщение об ошибке и подтвердить нажатимем клавиши
+            _getch(); // Пользователь должен увидеть собщение об ошибке и подтвердить нажатимем клавиши
             return false;
         }
 
@@ -257,12 +254,6 @@ public:
                     std::wcout << L"  Нажмите любую клавишу для продолжения...";
                     _getch();
                 }
-
-                // std::wcout << L"  Введено значение: " << val << std::endl;
-                // db->setStudentAttr(studentId, attr[opt], converter.to_bytes(val));
-                // std::wcout << L"  Значение: " << val << L" сохранено." << std::endl;
-                // std::wcout << L"  Нажмите любую клавишу для продолжения...";
-                // _getch();
             }
             else
             {
@@ -367,34 +358,6 @@ public:
                 }
                 break;
             }
-            // std::wcout << L"Введите предмет: ";
-            // {
-            //     std::wstring tmp;
-            //     std::getline(std::wcin, tmp);
-            //     std::wcin.ignore();
-            //     exam = converter.to_bytes(tmp);
-            // }
-            // while (true)
-            // {
-            //     std::wcout << L"Введите оценку (0-незачет, 1-зачет, 2..5): ";
-            //     {
-            //         std::wstring tmp;
-            //         std::getline(std::wcin, tmp);
-            //         std::wcin.ignore();
-            //         mark = converter.to_bytes(tmp);
-            //     }
-            //     if (!std::all_of(mark.begin(), mark.end(), ::isdigit)) // проверим на число
-            //     {
-            //         std::wcout << L"Ошибка. Ожидалось число." << std::endl;
-            //         continue;
-            //     }
-            //     if (stol(mark) > 5 || stol(mark) < 0)
-            //     {
-            //         std::wcout << L"Ошибка. Число в дипазоне 0..5" << std::endl;
-            //         continue;
-            //     }
-            //     break;
-            // }
             db->setExamResult(studentId, stol(session), exam, stol(mark));
         }
     }
