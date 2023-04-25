@@ -194,7 +194,7 @@ public:
                 break;
         }
 
-        std::wcout << L"Поступил: ";
+        std::wcout << L"Год поступления: ";
         std::getline(std::wcin, startYear);
         std::wcin.ignore();
 

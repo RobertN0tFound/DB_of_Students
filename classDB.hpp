@@ -6,6 +6,7 @@
 #include "classMap.hpp"
 #include "classEncryption.hpp"
 #include "json.hpp"
+#include <ctime>
 
 using json = nlohmann::json;
 
@@ -127,9 +128,9 @@ public:
                 db[sid]["Отчество"] = middleName;
                 db[sid]["Дата рождения"] = birthDate;
                 db[sid]["Пол"] = sex;
-                db[sid]["Поступил"] = startYear;
-                db[sid]["Отделение"] = departament;
-                db[sid]["Факультет"] = facultet;
+                db[sid]["Год поступления"] = startYear;
+                db[sid]["Кафедра"] = departament;
+                db[sid]["Институт"] = facultet;
                 db[sid]["Группа"] = group;
                 db[sid]["Номер зачетки"] = numDoc;
                 db[sid]["Рейтинг"] = 0.0;
@@ -478,7 +479,7 @@ public:
             return "";
         
         std::string res;
-        res = db[sid]["Поступил"];
+        res = db[sid]["Год поступления"];
         return res;
     }
 
@@ -489,7 +490,7 @@ public:
             return "";
         
         std::string res;
-        res = db[sid]["Отделение"];
+        res = db[sid]["Кафедра"];
         return res;
     }
 
@@ -500,7 +501,7 @@ public:
             return "";
         
         std::string res;
-        res = db[sid]["Факультет"];
+        res = db[sid]["Институт"];
         return res;
     }
 
@@ -524,6 +525,22 @@ public:
         std::string res;
         res = db[sid]["Номер зачетки"];
         return res;
+    }
+
+    std::string getCurrentSemester(const int _id)
+    {
+        std::string sid = std::to_string(_id);
+        if (!isStudentFound(sid))
+            return "";
+
+        std::string res;
+        res = db[sid]["Год поступления"];
+        int startY = stol(res);
+        std::time_t now = time(0);
+        tm* ltm = localtime(&now);
+        int currentY = 1900 + ltm->tm_year;
+        int semesters = (currentY - startY) * 2;
+        return std::to_string(semesters);
     }
 
     bool deleteStudent(const int _id)
