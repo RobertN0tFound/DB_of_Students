@@ -4,6 +4,7 @@
 #include "classStudent.hpp"
 #include "classMap.hpp"
 #include "classMassive.hpp"
+#include "classEncryption.hpp"
 #include <windows.h>
 #include <string>
 #include <locale>
@@ -67,6 +68,8 @@ int main()
             _getch();
             break;
         default:
+            class fileEnc fe;
+            fe.Crypt();
             return 0;
         }
     }

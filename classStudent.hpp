@@ -1,16 +1,22 @@
-﻿#include "classMenu.hpp"
+﻿#pragma once
+#include "classMenu.hpp"
 #include "classDB.hpp"
 #include "classStudentChange.hpp"
 #include "classMassive.hpp"
 #include "classMap.hpp"
+#include "classBirthDate.hpp"
+#include <limits>
 
 class Student
 {
 private:
     DB_Students *db;
 
+protected:
     bool isDigit(const std::wstring& str)
     {
+        if (str.empty())
+            return false;
         for (const auto& c : str)
         {
             if (!std::isdigit(c))
@@ -21,6 +27,8 @@ private:
 
     bool isAlpha(std::wstring const &str)
     {
+        if (str.empty())
+            return false;
         for (const auto& c : str)
         {
             if (!iswalpha(c))
@@ -94,7 +102,7 @@ public:
         std::wstring name;
         std::wstring surName;
         std::wstring middleName;
-        std::wstring birthDate;
+        class birthDate birthDate;
         std::wstring sex;
         std::wstring startYear;
         std::wstring departament;
@@ -146,15 +154,29 @@ public:
 
         while (true)
         {
-            std::wcout << L"Дата рождения: ";
-            std::getline(std::wcin, birthDate);
+            class birthDate temp;
+            unsigned short _day = 0;
+            unsigned short _month = 0;
+            unsigned short _year = 0;
+            std::wcout << L"Введите дату рождения (день, месяц, год): ";
+            std::wcin >> _day >> _month >> _year;
             std::wcin.ignore();
-            if (!isDigit(birthDate))
+            if (_day != 0 && _month != 0 && _year != 0)
             {
-                std::wcout << L"Некорректная дата рождения. Дата рождения должна состоять только из цифр!" << std::endl;
+                if (!temp.is_valid(_day, _month, _year))
+                {
+                    std::wcout << L"Дата рождения введена не корректно!" << std::endl;
+                }
+                else
+                {
+                    birthDate.setDate(_day, _month, _year);
+                    break;
+                }
             }
             else
-                break;
+            {
+                std::wcout << L"Дата рождения введена не корректно!" << std::endl;
+            }
         }
 
         while (true)
@@ -193,7 +215,7 @@ public:
         if (db->addStudent(converter.to_bytes(name),
                         converter.to_bytes(middleName),
                         converter.to_bytes(surName),
-                        converter.to_bytes(birthDate),
+                        birthDate.getDate(),
                         converter.to_bytes(sex),
                         converter.to_bytes(startYear),
                         converter.to_bytes(departament),

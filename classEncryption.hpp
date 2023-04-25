@@ -80,7 +80,7 @@ public:
         command += pass;
         system(command.c_str());
 
-        if (remove("database.enc") != 0) {
+        if (remove("database.txt.enc") != 0) {
             std::cout << "[ERROR] - deleting file" << std::endl;
         }
     }
