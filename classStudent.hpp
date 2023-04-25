@@ -198,11 +198,11 @@ public:
         std::getline(std::wcin, startYear);
         std::wcin.ignore();
 
-        std::wcout << L"Отделение: ";
+        std::wcout << L"Кафедра: ";
         std::getline(std::wcin, departament);
         std::wcin.ignore();
 
-        std::wcout << L"Факультет: ";
+        std::wcout << L"Институт (факультет): ";
         std::getline(std::wcin, facultet);
         std::wcin.ignore();
 

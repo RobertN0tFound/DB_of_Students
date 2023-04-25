@@ -5,7 +5,7 @@
 #include "classMassive.hpp"
 #include "classMap.hpp"
 #include "classEncryption.hpp"
-#include "json.hpp" //https://json.nlohmann.me/api/basic_json/is_number/#examples
+#include "json.hpp"
 
 using json = nlohmann::json;
 
@@ -213,7 +213,6 @@ public:
         }
         catch (json::exception &e)
         {
-            // output exception information
             std::cerr << "message: " << e.what() << std::endl
                     << "exception id: " << e.id << std::endl;
             return -1;
@@ -248,8 +247,6 @@ public:
             if (count > 0) // если есть оценки, то вычислим среднее арифметическое значение рейтинга
             {
                 db[key]["Рейтинг"] = round((rating / count) * 100) / 100; // оставим 2 знака после запятой
-                // std::cout << "Рейтинг" << db[key]["Рейтинг"] << std::endl;
-                // std::cout << key << std::endl;
             }
             else
                 db[key]["Рейтинг"] = 0.0;
@@ -296,31 +293,6 @@ public:
                     else
                         db[key]["Рейтинг"] = 0.0;
                 }
-            // rating = 0.0; // сбросим рейтинг для найденного студента
-            // count = 0;    // считаем кол-во сданных экзаменов
-            // for (auto &[_skey, _sval] : val["Сессия"].items())
-            // {
-            //     int sessNum = stol(_skey);    
-            //     if (sessNums.contains(sessNum))
-            //     {
-            //         for (auto &[_key, _val] : _sval.items()) // скичем ключ и значение
-            //         {
-            //             for (auto &[exam, mark] : _val.items()) // так как в значении у нас структуре предмет:оценка, то пройдемся по ней
-            //             {                                       // обход всех сданных экзаменов
-            //                 rating += int(mark);                // приведение явно к типу int
-            //                 count++;                            // считаем кол-во сданных экзменов
-            //             }
-            //         }
-            //     }                                   // Берем только сессию, остальные поля нам не интресны
-            // }
-            // if (count > 0) // если есть оценки, то вычислим среднее арифметическое значение рейтинга
-            // {
-            //     db[key]["Рейтинг"] = round((rating / count) * 100) / 100; // оставим 2 знака после запятой
-            //     // std::cout << "Рейтинг" << db[key]["Рейтинг"] << std::endl;
-            //     // std::cout << key << std::endl;
-            // }
-            // else
-            //     db[key]["Рейтинг"] = 0.0;
         }
         return true;
     };
@@ -662,40 +634,3 @@ public:
         return std::to_string(res);
     }
 };
-/* Примеры использования
-    db.load();
-    int student1 = db.addStudent("Сергей", "Сергеевич", "Сергеев", "М", "2021", "ВТиА", "ИБ", "ИБ-2021-001", "202101008");
-    int student2 = db.addStudent("Елена", "Петровна", "Умывайкина", "Ж", "2021", "ВТиА", "ИБ", "ИБ-2021-001", "202101009");
-    // int i = db.getStudentId("Иван", "Иванович", "Иванов");
-    if (student1 > 0)
-    {
-        db.setExamResult(student1, 0, "Математика", 1);
-        db.setExamResult(student1, 0, "Физика", 5);
-        db.setExamResult(student1, 1, "Биология", 5);
-    }
-    // i = db.getStudentId("Анна", "Петровна", "Иванова");
-    if (student2 > 0)
-    {
-        db.setExamResult(student2, 0, "Основы биологии", 5);
-        db.setExamResult(student2, 1, "Математика", 5);
-        db.setExamResult(student2, 1, "Основы биологии", 5);
-    }
-    db.calculateAllRating();
-
-    Massive<int> sorting = db.sortDec();
-
-    for (int i = 0; i < sorting.size(); i++)
-    {
-        std::cout << sorting[i] << " :  " << db.getStudentFIO(sorting[i]) << std::endl;
-    }
-
-    std::cout << "Основы биологии: " << db.getExamResult(1, 0, "Основы биологии") << std::endl;
-
-    std::cout << "Иван id: " << db.getStudentId("Иван", "Иванович", "Иванов") << std::endl;
-    std::cout << "Анна id: " << db.getStudentIdNumDoc("202101003") << std::endl;
-
-    // std::cout << std::setw(4) << db.db << std::endl;
-
-    db.save();
-
-*/
