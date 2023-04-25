@@ -16,7 +16,7 @@ private:
     // Проверка корректности введенных данных
     bool check_date(unsigned short _day, unsigned short _month, unsigned short _year)
     {
-        if (_year > 0 && _year < 9999)
+        if (_year > 1923 && _year < 2036)
         {
             if (_month > 0 && _month < 13)
             {
