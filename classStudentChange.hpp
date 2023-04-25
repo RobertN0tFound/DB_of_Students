@@ -6,6 +6,7 @@
 #include "classBirthDate.hpp"
 #include <locale>
 #include <codecvt>
+#include <sstream>
 
 // std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
@@ -185,18 +186,20 @@ public:
 
             if (attr[opt] != "Рейтинг")
             {
-                std::wstring val;
+                std::wstring val = L"";
                 std::wcout << L"  Введите значение для атрибута <" << converter.from_bytes(attr[opt]) << L">: ";
                 if (attr[opt] == "Дата рождения")
                 {
                     while (true)
                     {
                         class birthDate temp;
-                        unsigned short _day = 0;
-                        unsigned short _month = 0;
-                        unsigned short _year = 0;
-                        std::wcin >> _day >> _month >> _year;
+                        std::wstring date;
+                        std::wstringstream ss;
+                        unsigned short _day, _month, _year;
+                        std::getline(std::wcin, date);
                         std::wcin.ignore();
+                        ss.str(date);
+                        ss >> _day >> _month >> _year;
                         if (_day != 0 && _month != 0 && _year != 0)
                         {
                             if (!temp.is_valid(_day, _month, _year))
@@ -245,7 +248,9 @@ public:
                             else
                                 break;
                         }
+                        break;
                     }
+
                     std::wcout << L"  Введено значение: " << val << std::endl;
                     db->setStudentAttr(studentId, attr[opt], converter.to_bytes(val));
                     std::wcout << L"  Значение: " << val << L" сохранено." << std::endl;
