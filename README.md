@@ -4,6 +4,6 @@
 Необходимые условия для работы данной программы с шифрованием:
 - Установить OpenSSL;
 - Сгенерировать публичный и приватный RSA ключ;
-/ genrsa -out rsa.private 4096
-/ rsa -in rsa.private -pubout -out rsa.public
+> genrsa -out rsa.private 4096
+> rsa -in rsa.private -pubout -out rsa.public
 - Удалить старую базу данных и создать новую (так как для расшифровки старой требуется ключ, который есть только у меня);
