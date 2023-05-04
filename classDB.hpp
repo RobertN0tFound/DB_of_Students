@@ -196,6 +196,28 @@ public:
         return true;
     }
 
+    bool removeExamResult(const int studentId, const int sessionId, const std::string &examName)
+    {
+        std::string sid = std::to_string(studentId);
+        if (!isStudentFound(sid))
+            return false; // нет студента
+
+        std::string sesId = std::to_string(sessionId);
+
+        try
+        {
+            db[sid]["Сессия"][sesId].erase(examName);
+        }
+        catch (json::exception &e)
+        {
+            // output exception information
+            std::cerr << "message: " << e.what() << std::endl
+                    << "exception id: " << e.id << std::endl;
+            return false;
+        }
+        return true;
+    }
+
     // возвращает оценку по id студента, id сессии, ноименования предмета
     // если не найдено значение, то возврат будет < 0
     int getExamResult(const int studentId, const int sessionId, std::string examName)

@@ -286,8 +286,24 @@ public:
                 std::wcout << L"Сессия: " << converter.from_bytes(std::to_string(sessionList[i])) << std::endl;
                 for (auto element : db->getSessionExamList(studentId, sessionList[i]))
                 {
-                    std::wcout << L"  " << converter.from_bytes(element.first)
+                    if (element.second == 0)
+                    {
+                        std::wcout << L"  " << converter.from_bytes(element.first)
+                            << L": не зачёт" << std::endl;
+                        continue;
+                    }
+                    if (element.second == 1)
+                    {
+                        std::wcout << L"  " << converter.from_bytes(element.first)
+                            << L": зачёт" << std::endl;
+                        continue;
+                    }
+                    else
+                    {
+                        std::wcout << L"  " << converter.from_bytes(element.first)
                             << L": " << converter.from_bytes(std::to_string(element.second)) << std::endl;
+                        continue;
+                    }
                 }
             }
             while (true)
@@ -335,49 +351,106 @@ public:
                 }
                 while (true)
                 {
-                    std::wcout << L"Введите предмет: ";
+                    std::wcout << L"  1) Добавить/редактировать предмет и оценку" << std::endl;
+                    std::wcout << L"  2) Удалить предмет" << std::endl;
+                    std::wcout << L"  3) Вернуться к выбору сессий" << std::endl;
+                    std::wcout << L"Выберите действие: ";
+                    std::wstring action_temp;
+                    std::getline(std::wcin, action_temp);
+                    std::wcin.ignore();
+                    std::string action_str = converter.to_bytes(action_temp);
+                    if (action_str.empty())
                     {
-                        std::wstring tmp;
-                        std::getline(std::wcin, tmp);
-                        std::wcin.ignore();
-                        exam = converter.to_bytes(tmp);
-                    }
-                    if (exam.empty())
-                    {
-                        std::wcout << L"Ошибка. Ожидалось название предмета!" << std::endl;
+                        std::wcout << L"Ошибка. Ожидалось число!" << std::endl;
                         continue;
                     }
-                    break;
-                }
-                while (true)
-                {
-                    std::wcout << L"Введите оценку (0-незачет, 1-зачет, 2..5): ";
+                    if (action_str == "3")
+                        break;
+                    if (!std::all_of(action_str.begin(), action_str.end(), ::isdigit)) // проверим на число
                     {
-                        std::wstring tmp;
-                        std::getline(std::wcin, tmp);
-                        std::wcin.ignore();
-                        mark = converter.to_bytes(tmp);
-                    }
-                    if (mark.empty())
-                    {
-                        std::wcout << L"Ошибка. Ожидалась оценка за предмет!" << std::endl;
+                        std::wcout << L"Ошибка. Ожидалось число!" << std::endl;
                         continue;
                     }
-                    if (!std::all_of(mark.begin(), mark.end(), ::isdigit)) // проверим на число
+                    int action = stoi(action_str);
+                    switch (action)
                     {
-                        std::wcout << L"Ошибка. Ожидалось число." << std::endl;
-                        continue;
-                    }
-                    if (stol(mark) > 5 || stol(mark) < 0)
-                    {
-                        std::wcout << L"Ошибка. Число в дипазоне 0..5" << std::endl;
-                        continue;
+                        case 1:
+                        {
+                            while (true)
+                            {
+                                std::wcout << L"Введите предмет: ";
+                                {
+                                    std::wstring tmp;
+                                    std::getline(std::wcin, tmp);
+                                    std::wcin.ignore();
+                                    exam = converter.to_bytes(tmp);
+                                }
+                                if (exam.empty())
+                                {
+                                    std::wcout << L"Ошибка. Ожидалось название предмета!" << std::endl;
+                                    continue;
+                                }
+                                break;
+                            }
+                            while (true)
+                            {
+                                std::wcout << L"Введите оценку (0-не зачёт, 1-зачёт, 2..5): ";
+                                {
+                                    std::wstring tmp;
+                                    std::getline(std::wcin, tmp);
+                                    std::wcin.ignore();
+                                    mark = converter.to_bytes(tmp);
+                                }
+                                if (mark.empty())
+                                {
+                                    std::wcout << L"Ошибка. Ожидалась оценка за предмет!" << std::endl;
+                                    continue;
+                                }
+                                if (!std::all_of(mark.begin(), mark.end(), ::isdigit)) // проверим на число
+                                {
+                                    std::wcout << L"Ошибка. Ожидалось число." << std::endl;
+                                    continue;
+                                }
+                                if (stol(mark) > 5 || stol(mark) < 0)
+                                {
+                                    std::wcout << L"Ошибка. Число не в дипазоне 0..5" << std::endl;
+                                    continue;
+                                }
+                                break;
+                            }
+                            db->setExamResult(studentId, stol(session), exam, stol(mark));
+                            break;
+                        }
+                        case 2:
+                        {
+                            std::wstring exam_to_remove;
+                            while (true) {
+                                std::wcout << L"Введите предмет, который хотите удалить: ";
+                                std::getline(std::wcin, exam_to_remove);
+                                std::wcin.ignore();
+                                if (exam_to_remove.empty()) {
+                                    std::wcout << L"Ошибка. Ожидалось название предмета!" << std::endl;
+                                    continue;
+                                }
+                                break;
+                            }
+                            db->removeExamResult(studentId, stol(session), converter.to_bytes(exam_to_remove));
+                            break;
+                        }
+                        case 3:
+                        {
+                            break;
+                        }
+                        default:
+                        {
+                            std::wcout << L"Ошибка. Введено некорректное значение!" << std::endl;
+                            continue;
+                        }
                     }
                     break;
                 }
                 break;
             }
-            db->setExamResult(studentId, stol(session), exam, stol(mark));
         }
     }
 };
