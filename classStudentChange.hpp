@@ -361,11 +361,11 @@ public:
                     std::string action_str = converter.to_bytes(action_temp);
                     if (action_str.empty())
                     {
-                        std::wcout << L"Ошибка. Ожидалось число или !" << std::endl;
+                        std::wcout << L"Ошибка. Ожидалось число!" << std::endl;
                         continue;
                     }
                     if (action_str == "3")
-                        return;
+                        break;
                     if (!std::all_of(action_str.begin(), action_str.end(), ::isdigit)) // проверим на число
                     {
                         std::wcout << L"Ошибка. Ожидалось число!" << std::endl;
@@ -438,10 +438,12 @@ public:
                             break;
                         }
                         case 3:
+                        {
                             break;
+                        }
                         default:
                         {
-                            std::wcout << L"Введено некорректное значение!" << std::endl;
+                            std::wcout << L"Ошибка. Введено некорректное значение!" << std::endl;
                             continue;
                         }
                     }
@@ -449,7 +451,6 @@ public:
                 }
                 break;
             }
-            continue;
         }
     }
 };
