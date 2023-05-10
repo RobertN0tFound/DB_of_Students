@@ -4,14 +4,13 @@
 #include <iostream>
 #include <codecvt>
 #include <locale>
-#include "classMassive.hpp"
+#include "classList.hpp"
 
-std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 class Menu
 {
 private:
-    Massive<std::wstring> title;
-    Massive<std::wstring> options;
+    LinkedList<std::wstring> title;
+    LinkedList<std::wstring> options;
 
     void gotoxy(int x, int y)
     {
@@ -49,7 +48,7 @@ public:
 
         std::wcout << L"╔" << line_sim << L"╗" << std::endl;
         // рисуем заголовок
-        for (int i = 0; i < title.size(); i++)
+        for (int i = 0; i < title.getSize(); i++)
         {
             std::wcout << L"║   " << title[i];
             gotoxy(61, 1 + i);
@@ -58,7 +57,7 @@ public:
         std::wcout << L"╠" << line_sim << L"╣" << std::endl;
 
         // рисуем опции в меню
-        for (int i = 0; i < options.size(); i++)
+        for (int i = 0; i < options.getSize(); i++)
         {
             std::wcout << L"║";
             if (current_option == i)
@@ -66,7 +65,7 @@ public:
             else
                 std::wcout << L"   ";
             std::wcout << options[i];
-            gotoxy(61, title.size() + i + 2);
+            gotoxy(61, title.getSize() + i + 2);
             std::wcout << L"║" << std::endl;
         }
 
@@ -93,11 +92,11 @@ public:
                 case 72:
                     option--;
                     if (option < 0)
-                        option = options.size() - 1;
+                        option = options.getSize() - 1;
                     break;
                 case 80:
                     option++;
-                    if (option > options.size() - 1)
+                    if (option > options.getSize() - 1)
                         option = 0;
                     break;
                 }
