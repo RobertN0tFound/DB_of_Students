@@ -38,7 +38,7 @@ int main()
     initConsoleLocale();
 
     menu.addTitle("База данных студентов");
-    menu.addOption("Просмотр/измение информации студента");
+    menu.addOption("Просмотр/изменение информации студента");
     menu.addOption("Добавить нового студента в БД");
     menu.addOption("Выполнить вариант задания №82");
     menu.addOption("Загрузить БД студентов");
@@ -70,7 +70,7 @@ int main()
             Massive<int> cntSess;
             Massive<int> birthCheck;
             class Menu smenu;
-            Student student(&db);
+            // Student student(&db);
             Massive<int> sdb;
             std::wstringstream ss;
             std::wstringstream ssB;

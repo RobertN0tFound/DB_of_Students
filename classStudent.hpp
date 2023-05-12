@@ -91,7 +91,7 @@ public:
             if (opt == 0)
                 return;
             {
-                StudentChange student(db, listMenu[opt].first);
+                StudentChange student(db, listMenu[opt].second);
                 student.run();
             }
         }
